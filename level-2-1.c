@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+#include<windows.h>
 char str[2000],zhong[5]="END",realzhong[6]="OVER";
 int f1=0,f2=0,len,ls[2000],name,shelve,cost,st,num,all,inp,allnum;
 int shelves[10][10],mem[5][10],pric[30];
@@ -14,6 +15,8 @@ void xz();
 void gm();
 int main()
 {
+    SetConsoleCP(CP_UTF8);
+    SetConsoleOutputCP(CP_UTF8);
     printf("欢迎使用\033[31m华中科技大学\033[0m自动售货机，下面是我的操作指南(*^▽^*)\n");
     printf("您可以进行1:\033[32m货物放置\033[0m  2:\033[33m选择货物\033[0m  3:\033[34m货物购买\033[0m  三种操作，");
     printf("请注意货物放置只可进行\033[31m一\033[0m次，当货物\033[31m全部\033[0m购买完之前或是您键入\033[31mOVER\033[0m前，请持续进行选择与购买\n");
