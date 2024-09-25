@@ -5,14 +5,11 @@
 char str[2000],zhong[5]="END",realzhong[6]="OVER";
 int f1=0,f2=0,len,ls[2000],name,shelve,cost,st,num,all,inp,allnum;
 int shelves[10][10],mem[5][10],pric[30];
-void tur()
-{
-    printf("请再次阅读操作指南 谢谢\n");
-    gets(str);
-}
+void tur();
 void fz();
 void xz();
 void gm();
+void mq();
 int main()
 {
     SetConsoleCP(CP_UTF8);
@@ -32,7 +29,13 @@ int main()
     printf("这一次您只需要输入投币金额我就明白您的意思啦(〃'▽'〃)\n");
     printf("就是这么多喽，欢迎使用\033[31m华中科技大学\033[0m自动售货机\n");
     fz();
+    system("pause");
     return 0;
+}
+void tur()
+{
+    printf("请再次阅读操作指南 谢谢\n");
+    gets(str);
 }
 void fz()
 {
@@ -125,6 +128,7 @@ void fz()
 void xz()
 {
     printf("\n\n货物选择\n请按照：货物名称 所在通道 选择个数 选择您需要的货物\n");
+    mq();
     gets(str);
     if(strcmp(str,realzhong)==0) exit(0);
     while (strcmp(str,zhong)!=0)
@@ -173,7 +177,7 @@ void xz()
             if (shelves[shelve][2]<ls[4])
             {
 // printf("%d %d\n",shelve,ls[4]);
-                printf("万分抱歉,我无法供应给您足够数量的货物\n该通道只有%d件您所需要的货物\n",shelves[shelve][2]);
+                printf("万分抱歉,我无法供应给您足够数量的货物\n该通道只有%d件%c货物\n",shelves[shelve][2],shelves[shelve][1]-1+'A');
                 gets(str);continue;
             }
             else
@@ -188,7 +192,7 @@ void xz()
             ls[4]=(str[4]-'0')*10+str[5]-'0';
             if (shelves[shelve][2]<ls[4])
             {
-                printf("万分抱歉,我无法供应给您足够数量的货物\n该通道只有%d件您所需要的货物\n");
+                printf("万分抱歉,我无法供应给您足够数量的货物\n该通道只有%d件%c货物\n",shelves[shelve][2],shelves[shelve][1]-1+'A');
                 gets(str);continue;
             }
             else
@@ -198,13 +202,14 @@ void xz()
                 allnum-=ls[4];
             }
         }
+        mq();
         gets(str);
     }
     gm();
 }
 void gm()
 {
-    printf("\n\n货物购买\n只要输入您投币的数值就可以咯\n");
+    printf("\n\n货物购买\n只要输入您投币的数值就可以咯,应支付%d元哦\n",all);
     inp=0;
     while (inp<all)
     {
@@ -212,16 +217,16 @@ void gm()
         len=strlen(str);
         if(len>=2)
         {
-            printf("投币好像投错了呢(╯︵╰)");
-            tur();continue;
+            printf("投币好像投错了呢(╯︵╰)\n请再次阅读操作指南，谢谢\n");
+            continue;
         }
         else
         {
             ls[0]=str[0]-'0';
             if (ls[0]!=1&&ls[0]!=2&&ls[0]!=5)
             {
-                printf("投币好像投错了呢(╯︵╰)");
-                tur();continue;
+                printf("投币好像投错了呢(╯︵╰)\n请再次阅读操作指南，谢谢\n");
+                continue;
             }
             else inp+=ls[0];
         }
@@ -234,4 +239,18 @@ void gm()
         exit(0);
     }
     xz();
+}
+void mq()
+{
+    printf("目前");
+    for (int i=1;i<=5;i++)
+    {
+        if(shelves[i][2]==0)
+        {
+            printf("货道%d没有货物  ",i);
+            continue;
+        }
+        printf("货道%d有%d件%c货物  ",i,shelves[i][2],shelves[i][1]-1+'A');
+    }
+    printf("\n");
 }
