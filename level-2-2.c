@@ -2,14 +2,18 @@
 #include<stdlib.h>
 #include<string.h>
 #include<windows.h>
-char str[2000],zhong[5]="END",realzhong[6]="OVER";
-int f1=0,f2=0,len,ls[2000],name,shelve,cost,st,num,all,inp,allnum;
+char str[100000],zhong[5]="END",realzhong[6]="OVER",bb[6]="back";
+int f1=0,f2=0,len,ls[100000],name,shelve,cost,st,num,all,inp,allnum;
 int shelves[10][10],mem[5][10],pric[30];
+int huitui[5][15],ht;
+int f;
 void tur();
 void fz();
 void xz();
 void gm();
-void mq();
+void gob();
+void bog();
+void htfuc();
 int main()
 {
     SetConsoleCP(CP_UTF8);
@@ -17,19 +21,19 @@ int main()
     printf("欢迎使用\033[31m华中科技大学\033[0m自动售货机，下面是我的操作指南(*^▽^*)\n");
     printf("您可以进行1:\033[32m货物放置\033[0m  2:\033[33m选择货物\033[0m  3:\033[34m货物购买\033[0m  三种操作，");
     printf("请注意货物放置只可进行\033[31m一\033[0m次，当货物\033[31m全部\033[0m购买完之前或是您键入\033[31mOVER\033[0m前，请持续进行选择与购买\n");
-    printf("在“\033[32m货物放置\033[0m”“\033[33m选择货物\033[0m”“\033[34m货物购买\033[0m”得不同操作之间，请用\033[31mEND\033[0m来告知我哦（注意大写捏）( • ̀ω•́ )✧\n");
+    printf("在“\033[32m货物放置\033[0m”“\033[33m选择货物\033[0m”“\033[34m货物购买\033[0m”得不同操作之间，请用\033[31mEND\033[0m来告知我哦（注意大写捏）( ? ?ω?? )?\n");
+    printf("新增回退功能，输入“back”（这次是小写哦）即可执行回退操作，但是回退总次数虽然没有限制，但是最多连续撤销三次\n");
     printf("-----------------------------------------------------------------------------\n");
-    printf("\033[32m关于货物放置(￣▽￣)／\033[0m\n所有的货物均⽤\033[31m⼀\033[0m个⼤写英⽂字⺟代替（如A,B,C...X,Y,Z）\n我只有\033[31m 5 \033[0m个通道⽤来摆放货物，每个通道只能放\033[31m⼀\033[0m种货物，且每个通道最多放⼊\033[31m 50 \033[0m个货物；\033[31m不同\033[0m的通道可以放\033[31m相同\033[0m种类的货物\n每种货物的单价均在\033[31m 10 元以下\033[0m，且均为\033[31m整数\033[0m\n");
+    printf("\033[32m关于货物放置(￣▽￣)／\033[0m\n所有的货物均?\033[31m?\033[0m个?写英?字?代替（如A,B,C...X,Y,Z）\n我只有\033[31m 5 \033[0m个通道?来摆放货物，每个通道只能放\033[31m?\033[0m种货物，且每个通道最多放?\033[31m 50 \033[0m个货物；\033[31m不同\033[0m的通道可以放\033[31m相同\033[0m种类的货物\n每种货物的单价均在\033[31m 10 元以下\033[0m，且均为\033[31m整数\033[0m\n");
     printf("请您按照“\033[35m货物名称 所在通道 货物单价 摆放个数\033[0m”的顺序进行该操作，每一次操作完都要换行，注意空格哦(〃'▽'〃)\n");
     printf("-----------------------------------------------------------------------------\n");
-    printf("\033[33m关于选择货物(￣▽￣)／\033[0m\n我需要知晓您的\033[31m货物选择\033[0m，\033[31m所在通道\033[0m，\033[31m购买数量\033[0m才能全心全意为您服务哦(๑＞ڡ＜)☆\n");
+    printf("\033[33m关于选择货物(￣▽￣)／\033[0m\n我需要知晓您的\033[31m货物选择\033[0m，\033[31m所在通道\033[0m，\033[31m购买数量\033[0m才能全心全意为您服务哦(?＞?＜)☆\n");
     printf("请您按照“\033[35m货物名称 所在通道 选择个数\033[0m”的顺序进行该操作，每一次操作完都要换行，注意空格哦(〃'▽'〃)\n");
     printf("-----------------------------------------------------------------------------\n");
     printf("\033[34m关于货物购买(￣▽￣)／\033[0m\n我现在只认识\033[31m 1 元， 2 元和 5 元\033[0m呢(T^T)\n请您输入您投币的价格，当超过所需价格不用担心，我会自动找零哦φ(>ω<*) \n");
     printf("这一次您只需要输入投币金额我就明白您的意思啦(〃'▽'〃)\n");
     printf("就是这么多喽，欢迎使用\033[31m华中科技大学\033[0m自动售货机\n");
     fz();
-    system("pause");
     return 0;
 }
 void tur()
@@ -43,6 +47,13 @@ void fz()
     gets(str);
     while (strcmp(str,zhong)!=0)// not END
     {
+    	if(strcmp(str,bb)==0)
+    	{
+    		htfuc();
+    		bog();
+    		gets(str);
+    		continue;
+		}
         f1=0;f2=0;
         // 判断长度
         len=strlen(str);
@@ -80,6 +91,7 @@ void fz()
             tur();continue;
         }
         //判断单价
+        f=0;
         ls[4]=str[4];ls[5]=str[5];ls[6]=str[6];
         if (ls[4]>='0'&&ls[4]<='9'&&ls[5]==' ')
         {
@@ -95,7 +107,8 @@ void fz()
             printf("这个货物不是这个价格的");
             tur();continue;
         }
-        
+        if(pric[name]!=0&&pric[name]==cost)//操作回退时不考虑该情况 
+          f=1;
         //判断摆放数量
         num=0;
         for (int i=st;i<len;i++)
@@ -120,6 +133,10 @@ void fz()
         allnum+=num;
         shelves[shelve][1]=name;
         pric[name]=cost;
+        gob();
+        huitui[1][1]=6;huitui[1][2]=name;huitui[1][3]=shelve;huitui[1][4]=num;huitui[1][5]=cost;
+        if(f) huitui[1][6]=1;
+        else huitui[1][6]=0;
         // printf("%d %d %d %d %d\n",name,shelve,cost,num,shelves[shelve][2]);
         gets(str);
     }
@@ -133,6 +150,14 @@ void xz()
     if(strcmp(str,realzhong)==0) exit(0);
     while (strcmp(str,zhong)!=0)
     {
+		if(strcmp(str,bb)==0)
+        {
+            htfuc();
+            bog();
+            mq();
+            gets(str);
+            continue;
+        }
         f1=0;f2=0;
         // 判断长度
         len=strlen(str);
@@ -157,7 +182,7 @@ void xz()
         if (ls[2]>='1'&&ls[2]<='5'&&ls[3]==' ')//货架选择的格式正确
         {
             shelve=ls[2]-'0';
-            if (shelves[shelve][1]==0&&shelves[shelve][1]!=name)//货架与货物不对应
+            if (shelves[shelve][1]!=0&&shelves[shelve][1]!=name)//货架与货物不对应
             {
                 printf("这个通道没有储存你需要的货物诶~\n");
                 tur();continue;
@@ -202,6 +227,8 @@ void xz()
                 allnum-=ls[4];
             }
         }
+        gob();
+        huitui[1][1]=5;huitui[1][2]=name;huitui[1][3]=shelve;huitui[1][4]=num;huitui[1][5]=ls[4];
         mq();
         gets(str);
     }
@@ -209,11 +236,17 @@ void xz()
 }
 void gm()
 {
-    printf("\n\n货物购买\n只要输入您投币的数值就可以咯,应支付%d元哦\n",all);
+    printf("\n\n货物购买\n只要输入您投币的数值就可以咯,需要支付%d元哦\n",all);
     inp=0;
     while (inp<all)
     {
         gets(str);
+        if(strcmp(str,bb)==0)
+        {
+        	htfuc();
+            bog();
+            continue;
+        }
         len=strlen(str);
         if(len>=2)
         {
@@ -230,8 +263,11 @@ void gm()
             }
             else inp+=ls[0];
         }
+        gob();
+        huitui[1][1]=2;huitui[1][2]=ls[0];
     }
     printf("%d\n",inp-all);
+    memset(huitui,0,sizeof(huitui));
     all=0;
     if (allnum<=0)
     {
@@ -239,6 +275,47 @@ void gm()
         exit(0);
     }
     xz();
+}
+void gob()
+{
+	for(int i=2;i>=1;i--)
+	{
+		for(int j=1;j<=huitui[i][1];j++)
+		  huitui[i+1][j]=huitui[i][j];
+	}
+	for(int i=1;i<=6;i++) huitui[1][i]=0;
+}
+void bog()
+{
+	for(int i=2;i<=3;i++)
+	{
+		for(int j=1;j<=huitui[i][1];j++)
+		  huitui[i-1][j]=huitui[i][j];
+	}
+	for(int i=1;i<=6;i++) huitui[3][i]=0;
+}
+void htfuc()
+{
+	if(huitui[1][1]==6)
+	{
+		shelves[huitui[1][3]][2]-=huitui[1][4];
+		allnum-=huitui[1][4];
+		if(!huitui[1][6])
+		{
+			shelves[huitui[1][3]][1]=0;
+			pric[huitui[1][2]]=0;
+		}
+	}
+	else if(huitui[1][1]==5)
+	{
+		shelves[huitui[1][3]][2]+=huitui[1][5];
+		all-=pric[huitui[1][2]]*huitui[1][5];
+		allnum+=huitui[1][5];
+	}
+	else
+	{
+		inp-=huitui[1][2];
+	}
 }
 void mq()
 {
